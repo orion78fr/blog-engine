@@ -1,0 +1,14 @@
+package fr.orion78.blog.engine.admin;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import spark.Request;
+import spark.Response;
+
+public class Admin {
+  private static final Logger LOG = LoggerFactory.getLogger(Admin.class);
+
+  public static Object adminMenu(Request request, Response response) {
+    return null;
+  }
+}
