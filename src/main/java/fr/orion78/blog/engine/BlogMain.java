@@ -24,7 +24,7 @@ public class BlogMain {
 
     Spark.get("/", Content::mainContent);
     Spark.get("/reload", Content::reloadContent);
-    Spark.get("/category/:category", Categories::getCategory);
+    Spark.get("/category/*", Categories::getCategory);
     Spark.get("/article/:article", Articles::getArticle);
     Spark.get("/admin", Admin::adminMenu);
 

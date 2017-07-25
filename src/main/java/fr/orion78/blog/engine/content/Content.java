@@ -51,8 +51,12 @@ public class Content {
 
     try {
       InputStreamReader r = new InputStreamReader(new FileInputStream(new File(folder, "categories.json")), StandardCharsets.UTF_8);
-      Categories.INSTANCE = gson.fromJson(r, new TypeToken<List<Category>>() {
+      List<Category> categories = gson.fromJson(r, new TypeToken<List<Category>>() {
       }.getType());
+
+      Categories.fixFullPath(categories);
+
+      Categories.INSTANCE = categories;
     } catch (FileNotFoundException e) {
       LOG.error("Category file not found", e);
     }
@@ -65,18 +69,26 @@ public class Content {
   }
 
   public static Object mainContent(@NotNull Request request, @NotNull Response response) {
-    StringWriter writer = new StringWriter();
+    response.redirect("/category/" + Categories.INSTANCE.get(0).getFullPath());
+    return null;
+  }
+
+  private static String getCatList(String catToHighlight) {
     StringBuilder sb = new StringBuilder();
 
     sb.append("<ul class=\"nav nav-pills nav-justified\">");
     for (Category category : Categories.INSTANCE) {
-      printCat(sb, category, "Accueil");
+      printCat(sb, category, catToHighlight);
     }
     sb.append("</ul>");
 
-    String catList = sb.toString();
-    Map<String, Object> mapping = new HashMap<>();
-    mapping.put("categories", catList);
+    return sb.toString();
+  }
+
+  static String drawWebpage(Map<String, Object> mapping) {
+    StringWriter writer = new StringWriter();
+
+    mapping.put("categories", getCatList((String) mapping.get("catToHighlight")));
     mapping.put("title", "Il était trois fois trois meufs");
 
     Template mainContentTemplate;
@@ -98,16 +110,16 @@ public class Content {
   private static void printCat(@NotNull StringBuilder sb,
                                @NotNull Category category,
                                @Nullable String highlightCat) {
-    if (category.getName().equals(highlightCat)) {
+    if (category.getFullPath().equals(highlightCat)) {
       sb.append("<li class=\"active\">");
     } else {
       sb.append("<li>");
     }
-    sb.append("<a href=\"/category/").append(category.getName()).append("\">");
+    sb.append("<a href=\"/category/").append(category.getFullPath()).append("\">");
     sb.append(category.getName());
     sb.append("</a>");
 
-    if (category.getSubCategories() != null && category.getSubCategories().size() != 0) {
+    if (category.getSubCategories().size() != 0) {
       sb.append("<ul>");
       for (Category subCat : category.getSubCategories()) {
         printCat(sb, subCat, highlightCat);

@@ -27,5 +27,7 @@
       ${categories}
     </nav>
 
+    ${content}
+
   </body>
 </html>

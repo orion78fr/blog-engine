@@ -13,6 +13,7 @@ public class Category {
 
   private String name;
   private List<Category> subCategories;
+  private transient String fullPath;
 
   public Category(@NotNull String name, @Nullable List<Category> subCategories) {
     this.name = name;
@@ -23,7 +24,16 @@ public class Category {
     return name;
   }
 
+  @NotNull
   public List<Category> getSubCategories() {
-    return subCategories;
+    return subCategories == null ? Collections.emptyList() : subCategories;
+  }
+
+  public String getFullPath() {
+    return fullPath;
+  }
+
+  public void setFullPath(String fullPath) {
+    this.fullPath = fullPath;
   }
 }
