@@ -1,8 +1,6 @@
 package fr.orion78.blog.engine;
 
 import fr.orion78.blog.engine.admin.Admin;
-import fr.orion78.blog.engine.content.Articles;
-import fr.orion78.blog.engine.content.Categories;
 import fr.orion78.blog.engine.content.Content;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -15,11 +13,15 @@ public class BlogMain {
   private static final Logger LOG = LoggerFactory.getLogger(BlogMain.class);
 
   public static void main(@NotNull String[] args) {
-    Content content = Content.reloadContent(new File(System.getProperty("user.home") + "/www/blogs/meuf"));
+    if (args.length != 1) {
+      LOG.error("No folder given");
+      return;
+    }
+    Content content = Content.reloadContent(new File(args[0]));
 
     Spark.threadPool(20, 10, 20_000);
 
-    Spark.staticFiles.externalLocation(System.getProperty("user.home") + "/www/blogs/meuf/static");
+    Spark.staticFiles.externalLocation(args[0] + "/static");
     Spark.staticFiles.expireTime(600);
 
     Spark.get("/", content::mainContent);

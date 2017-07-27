@@ -10,6 +10,6 @@ public class Admin {
   private static final Logger LOG = LoggerFactory.getLogger(Admin.class);
 
   public static Object adminMenu(Request request, Response response) {
-    throw Spark.halt(404, "Currently not implemented");
+    throw Spark.halt(401, "You are not authorized (and it's not implemented)");
   }
 }
