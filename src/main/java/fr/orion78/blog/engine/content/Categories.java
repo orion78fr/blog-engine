@@ -16,9 +16,17 @@ import java.util.Map;
 public class Categories {
   private static final Logger LOG = LoggerFactory.getLogger(Categories.class);
 
-  static volatile List<Category> INSTANCE = Collections.emptyList();
+  private volatile List<Category> categories = Collections.emptyList();
 
-  public static Object getCategory(@NotNull Request request, @NotNull Response response) {
+  public Categories(@NotNull List<Category> categories) {
+    this.categories = categories;
+  }
+
+  public List<Category> getCategories() {
+    return categories;
+  }
+
+  public Object getCategory(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
     String[] splat = request.splat();
     if (splat.length != 1) {
       throw Spark.halt(400, "No category given");
@@ -30,7 +38,7 @@ public class Categories {
     mapping.put("content", "This is the content of the category " + category);
     mapping.put("catToHighlight", category);
 
-    return Content.drawWebpage(mapping);
+    return content.renderWebpage(mapping);
   }
 
   public static void fixFullPath(@NotNull List<Category> categories) {

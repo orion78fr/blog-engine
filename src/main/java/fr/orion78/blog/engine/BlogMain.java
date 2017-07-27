@@ -15,17 +15,17 @@ public class BlogMain {
   private static final Logger LOG = LoggerFactory.getLogger(BlogMain.class);
 
   public static void main(@NotNull String[] args) {
-    Content.reloadContent(new File(System.getProperty("user.home") + "/www/blogs/meuf"));
+    Content content = Content.reloadContent(new File(System.getProperty("user.home") + "/www/blogs/meuf"));
 
     Spark.threadPool(20, 10, 20_000);
 
     Spark.staticFiles.externalLocation(System.getProperty("user.home") + "/www/blogs/meuf/static");
     Spark.staticFiles.expireTime(600);
 
-    Spark.get("/", Content::mainContent);
-    Spark.get("/reload", Content::reloadContent);
-    Spark.get("/category/*", Categories::getCategory);
-    Spark.get("/article/:article", Articles::getArticle);
+    Spark.get("/", content::mainContent);
+    Spark.get("/reload", content::reloadContent);
+    Spark.get("/category/*", content::getCategory);
+    Spark.get("/article/:article", content::getArticle);
     Spark.get("/admin", Admin::adminMenu);
 
     Spark.after((request, response) -> response.header("Content-Encoding", "gzip"));
