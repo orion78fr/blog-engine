@@ -22,7 +22,6 @@ public class Category {
   public Category(@NotNull String name, @Nullable List<Category> subCategories) {
     this.name = name;
     this.subCategories = subCategories == null ? Collections.emptyList() : subCategories;
-    this.articles = new TreeSet<>(Comparator.naturalOrder());
   }
 
   public String getName() {
@@ -43,10 +42,16 @@ public class Category {
   }
 
   public void addArticle(@NotNull Article article) {
+    if (articles == null) {
+      articles = new TreeSet<>(Comparator.naturalOrder());
+    }
     articles.add(article);
   }
 
   public TreeSet<Article> getArticles() {
+    if (articles == null) {
+      articles = new TreeSet<>(Comparator.naturalOrder());
+    }
     return articles;
   }
 }

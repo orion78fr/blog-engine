@@ -22,7 +22,7 @@ public class BlogMain {
     Spark.threadPool(20, 10, 20_000);
 
     Spark.staticFiles.externalLocation(args[0] + "/static");
-    Spark.staticFiles.expireTime(600);
+    Spark.staticFiles.expireTime(2); // TODO increase it when not in test
 
     Spark.get("/", content::mainContent);
     Spark.get("/reload", content::reloadContent);

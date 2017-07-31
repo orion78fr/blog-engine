@@ -8,7 +8,6 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,17 +15,24 @@ import java.util.Map;
 public class Categories {
   private static final Logger LOG = LoggerFactory.getLogger(Categories.class);
 
-  private volatile List<Category> categories = Collections.emptyList();
+  private volatile List<Category> categories;
+  private volatile Map<String, Category> categoryMap = new HashMap<>();
 
   public Categories(@NotNull List<Category> categories) {
     this.categories = categories;
+
+    fixFullPath();
   }
 
   public List<Category> getCategories() {
     return categories;
   }
 
-  public Object getCategory(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
+  public Map<String, Category> getCategoryMap() {
+    return categoryMap;
+  }
+
+  Object getCategory(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
     String[] splat = request.splat();
     if (splat.length != 1) {
       throw Spark.halt(400, "No category given");
@@ -34,21 +40,28 @@ public class Categories {
 
     String category = splat[0];
 
+    Category cat = categoryMap.get(category);
+
+    if (cat == null) {
+      throw Spark.halt(404, "Category not found");
+    }
+
     Map<String, Object> mapping = new HashMap<>();
-    mapping.put("content", "This is the content of the category " + category);
+    mapping.put("content", "This category " + category + " contains " + cat.getArticles().size() + " articles");
     mapping.put("catToHighlight", category);
 
     return content.renderWebpage(mapping);
   }
 
-  public static void fixFullPath(@NotNull List<Category> categories) {
+  private void fixFullPath() {
     for (Category cat : categories) {
       fixFullPath(cat, "");
     }
   }
 
-  private static void fixFullPath(@NotNull Category cat, @NotNull String s) {
+  private void fixFullPath(@NotNull Category cat, @NotNull String s) {
     cat.setFullPath(s + cat.getName());
+    categoryMap.put(cat.getFullPath(), cat);
 
     for (Category subCat : cat.getSubCategories()) {
       fixFullPath(subCat, cat.getFullPath() + '/');

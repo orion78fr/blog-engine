@@ -71,8 +71,6 @@ public class Content {
       List<Category> categories = gson.fromJson(r, new TypeToken<List<Category>>() {
       }.getType());
 
-      Categories.fixFullPath(categories);
-
       this.categories = new Categories(categories);
     } catch (FileNotFoundException e) {
       LOG.error("Category file not found", e);
@@ -80,9 +78,10 @@ public class Content {
 
     Map<Long, Article> articles = new HashMap<>();
     try {
-      InputStreamReader r = new InputStreamReader(new FileInputStream(new File(staticFilesFolder, "articles/article-1.json")), StandardCharsets.UTF_8);
+      InputStreamReader r = new InputStreamReader(new FileInputStream(new File(staticFilesFolder, "articles/article-2.json")), StandardCharsets.UTF_8);
       Article article = gson.fromJson(r, Article.class);
-      articles.put(1L, article);
+      categories.getCategoryMap().get(article.getCategory()).addArticle(article);
+      articles.put(2L, article);
     } catch (FileNotFoundException e) {
       LOG.error("Articles file not found", e);
     }
