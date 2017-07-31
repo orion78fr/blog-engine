@@ -30,6 +30,13 @@ public class BlogMain {
     Spark.get("/article/:article", content::getArticle);
     Spark.get("/admin", Admin::adminMenu);
 
-    Spark.after((request, response) -> response.header("Content-Encoding", "gzip"));
+    Spark.after((request, response) ->
+        {
+          // Only if accepting it
+          if (request.headers("Accept-Encoding").contains("gzip")) {
+            response.header("Content-Encoding", "gzip");
+          }
+        }
+    );
   }
 }
