@@ -43,7 +43,7 @@ public class Category {
 
   private void checkInit() {
     if (articles == null) {
-      articles = new TreeSet<>(Comparator.comparing(Article::getId));
+      articles = new TreeSet<>(Comparator.comparing(Article::getId).reversed());
     }
   }
 

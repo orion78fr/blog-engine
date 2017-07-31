@@ -1,5 +1,6 @@
 package fr.orion78.blog.engine.content;
 
+import fr.orion78.blog.engine.content.article.Article;
 import fr.orion78.blog.engine.content.category.Category;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +49,16 @@ public class Categories {
     }
 
     Map<String, Object> mapping = new HashMap<>();
-    mapping.put("content", "This category " + category + " contains " + cat.getArticles().size() + " articles");
     mapping.put("catToHighlight", category);
+    if (cat.getArticles().size() == 0) {
+      mapping.put("content", "This category " + category + " is empty !");
+    } else {
+      StringWriter w = new StringWriter();
+      for(Article article : cat.getArticles()){
+        content.getArticles().renderArticle(article, w);
+      }
+      mapping.put("content", w.toString());
+    }
 
     return content.renderWebpage(mapping);
   }

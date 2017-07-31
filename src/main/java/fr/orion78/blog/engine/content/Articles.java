@@ -13,6 +13,7 @@ import spark.Spark;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,8 +56,10 @@ public class Articles {
   }
 
   private String renderArticle(@NotNull Article article){
-    StringWriter writer = new StringWriter();
+    return renderArticle(article, new StringWriter()).toString();
+  }
 
+  Writer renderArticle(@NotNull Article article, @NotNull Writer w){
     Map<String, Object> mapping = new HashMap<>();
     mapping.put("articleId", article.getId());
     mapping.put("articleImage", article.getArticleImage());
@@ -64,19 +67,19 @@ public class Articles {
     mapping.put("articleContent", article.getMdContent());
 
 
-    Template mainContentTemplate;
+    Template articleTemplate;
     try {
-      mainContentTemplate = Content.freeMarker.getTemplate("templates/article.ftl");
+      articleTemplate = Content.freeMarker.getTemplate("templates/article.ftl");
     } catch (IOException e) {
       throw Spark.halt(404, "Template not found");
     }
 
     try {
-      mainContentTemplate.process(mapping, writer);
+      articleTemplate.process(mapping, w);
     } catch (TemplateException | IOException e) {
       throw Spark.halt(500, "Error in template processing : " + Util.exceptionToStringForWebpage(e));
     }
 
-    return writer.toString();
+    return w;
   }
 }

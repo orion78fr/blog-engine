@@ -32,6 +32,7 @@ public class Content {
   private static final Logger LOG = LoggerFactory.getLogger(Content.class);
   static final Gson gson = new Gson();
   static Configuration freeMarker = new Configuration(new Version(2, 3, 23));
+
   static {
     freeMarker.setClassForTemplateLoading(Content.class, "");
   }
@@ -77,15 +78,29 @@ public class Content {
     }
 
     Map<Long, Article> articles = new HashMap<>();
+    File folder = new File(staticFilesFolder, "articles");
+    File[] files = folder.listFiles();
+    if (files == null) {
+      LOG.error("Cannot find articles !");
+    } else {
+      for (File article : files) {
+        loadArticle(articles, article);
+      }
+
+      this.articles = new Articles(articles);
+    }
+  }
+
+  private void loadArticle(@NotNull Map<Long, Article> articles, @NotNull File article) {
     try {
-      InputStreamReader r = new InputStreamReader(new FileInputStream(new File(staticFilesFolder, "articles/article-2.json")), StandardCharsets.UTF_8);
-      Article article = gson.fromJson(r, Article.class);
-      categories.getCategoryMap().get(article.getCategory()).addArticle(article);
-      articles.put(2L, article);
+      InputStreamReader r = new InputStreamReader(new FileInputStream(article), StandardCharsets.UTF_8);
+      Article art = gson.fromJson(r, Article.class);
+      categories.getCategoryMap().get(art.getCategory()).addArticle(art);
+      categories.getCategories().get(0).addArticle(art); // Add article to home too
+      articles.put(art.getId(), art);
     } catch (FileNotFoundException e) {
       LOG.error("Articles file not found", e);
     }
-    this.articles = new Articles(articles);
   }
 
   public Object reloadContent(@NotNull Request request, @NotNull Response response) {
@@ -165,5 +180,25 @@ public class Content {
 
   public Object getArticle(@NotNull Request request, @NotNull Response response) {
     return articles.getArticle(this, request, response);
+  }
+
+  Articles getArticles() {
+    return articles;
+  }
+
+  Categories getCategories() {
+    return categories;
+  }
+
+  String getBlogTitle() {
+    return blogTitle;
+  }
+
+  String getBlogTitleImg() {
+    return blogTitleImg;
+  }
+
+  String getSidebarMd() {
+    return sidebarMd;
   }
 }

@@ -30,10 +30,10 @@
     </nav>
 
     <div class="content">
-      <div class="mainContent col-md-9">
+      <div class="mainContent col-md-10">
         ${content}
       </div>
-      <div class="sidebar col-md-3">
+      <div class="sidebar col-md-2">
         <div class="googleSearch">
           This is where the google search bar will be.
         </div>
