@@ -29,12 +29,22 @@
       ${categories}
     </nav>
 
-    ${content}
+    <div class="content">
+      <div class="mainContent col-md-9">
+        ${content}
+      </div>
+      <div class="sidebar col-md-3">
+        <div class="googleSearch">
+          This is where the google search bar will be.
+        </div>
+        <div class="sidebarMd">${sidebarMd}</div>
+      </div>
+    </div>
 
     <script>
-      $(".articleMd").each(function () {
+      $(".articleMd, .sidebarMd").each(function () {
         var container = $(this);
-        container.html(marked(container.html(), { sanitize: false }));
+        container.html(marked(container.html(), {sanitize: false}));
       })
     </script>
   </body>

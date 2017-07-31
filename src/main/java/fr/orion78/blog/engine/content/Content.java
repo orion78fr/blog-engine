@@ -118,6 +118,7 @@ public class Content {
 
     mapping.put("categories", getCatList((String) mapping.get("catToHighlight")));
     mapping.put("title", blogTitle);
+    mapping.put("sidebarMd", sidebarMd);
 
     Template mainContentTemplate;
     try {

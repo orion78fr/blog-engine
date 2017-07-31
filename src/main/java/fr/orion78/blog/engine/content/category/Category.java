@@ -41,17 +41,19 @@ public class Category {
     this.fullPath = fullPath;
   }
 
-  public void addArticle(@NotNull Article article) {
+  private void checkInit() {
     if (articles == null) {
-      articles = new TreeSet<>(Comparator.naturalOrder());
+      articles = new TreeSet<>(Comparator.comparing(Article::getId));
     }
+  }
+
+  public void addArticle(@NotNull Article article) {
+    checkInit();
     articles.add(article);
   }
 
   public TreeSet<Article> getArticles() {
-    if (articles == null) {
-      articles = new TreeSet<>(Comparator.naturalOrder());
-    }
+    checkInit();
     return articles;
   }
 }

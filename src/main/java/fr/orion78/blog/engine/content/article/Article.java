@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Article implements Comparable<Article> {
+public class Article {
   private static final Logger LOG = LoggerFactory.getLogger(Article.class);
 
   private long id;
@@ -74,10 +74,5 @@ public class Article implements Comparable<Article> {
 
   public void setMdContent(String mdContent) {
     this.mdContent = mdContent;
-  }
-
-  @Override
-  public int compareTo(@NotNull Article o) {
-    return Long.compare(this.getId(), o.getId());
   }
 }
