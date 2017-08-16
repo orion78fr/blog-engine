@@ -26,7 +26,7 @@
       ${title}
     </header>
     <nav>
-      ${categories}
+      <#include "navBar.ftl">
     </nav>
 
     <div class="content">

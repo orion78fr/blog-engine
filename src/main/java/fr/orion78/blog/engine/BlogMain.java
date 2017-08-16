@@ -28,7 +28,17 @@ public class BlogMain {
     Spark.get("/reload", content::reloadContent);
     Spark.get("/category/*", content::getCategory);
     Spark.get("/article/:article", content::getArticle);
-    Spark.get("/admin", Admin::adminMenu);
+
+    Spark.path("/admin", () -> {
+      Spark.get("/", Admin::connectMenu);
+      Spark.post("/connect", Admin::createSessionIfCorrect);
+
+      Spark.path("/articles", () -> {
+        Spark.before("/*", Admin::ensureSession);
+        Spark.get("/list", Admin::getArticleList);
+        Spark.get("/article/:article", Admin::getArticle);
+      });
+    });
 
     Spark.after((request, response) ->
         {

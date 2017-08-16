@@ -10,7 +10,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -30,8 +29,8 @@ import java.util.Map;
 
 public class Content {
   private static final Logger LOG = LoggerFactory.getLogger(Content.class);
-  static final Gson gson = new Gson();
-  static Configuration freeMarker = new Configuration(new Version(2, 3, 23));
+  public static final Gson gson = new Gson();
+  public static final Configuration freeMarker = new Configuration(new Version(2, 3, 23));
 
   static {
     freeMarker.setClassForTemplateLoading(Content.class, "");
@@ -115,23 +114,10 @@ public class Content {
   }
 
   @NotNull
-  private String getCatList(@NotNull String catToHighlight) {
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("<ul class=\"nav nav-pills nav-justified\">");
-    for (Category category : categories.getCategories()) {
-      printCat(sb, category, catToHighlight);
-    }
-    sb.append("</ul>");
-
-    return sb.toString();
-  }
-
-  @NotNull
   String renderWebpage(@NotNull Map<String, Object> mapping) {
     StringWriter writer = new StringWriter();
 
-    mapping.put("categories", getCatList((String) mapping.get("catToHighlight")));
+    mapping.put("categories", categories.getCategories());
     mapping.put("title", blogTitle);
     mapping.put("sidebarMd", sidebarMd);
 
@@ -149,29 +135,6 @@ public class Content {
     }
 
     return writer.toString();
-  }
-
-  private static void printCat(@NotNull StringBuilder sb,
-                               @NotNull Category category,
-                               @Nullable String highlightCat) {
-    if (category.getFullPath().equals(highlightCat)) {
-      sb.append("<li class=\"active\">");
-    } else {
-      sb.append("<li>");
-    }
-    sb.append("<a href=\"/category/").append(category.getFullPath()).append("\">");
-    sb.append(category.getName());
-    sb.append("</a>");
-
-    if (category.getSubCategories().size() != 0) {
-      sb.append("<ul>");
-      for (Category subCat : category.getSubCategories()) {
-        printCat(sb, subCat, highlightCat);
-      }
-      sb.append("</ul>");
-    }
-
-    sb.append("</li>");
   }
 
   public Object getCategory(@NotNull Request request, @NotNull Response response) {
