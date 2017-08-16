@@ -85,4 +85,25 @@ public class Article {
   public void setLastModification(long lastModification) {
     this.lastModification = lastModification;
   }
+
+  private static int ordinalIndexOf(String str, String substr, int n) {
+    int pos = str.indexOf(substr);
+    while (--n > 0 && pos != -1)
+      pos = str.indexOf(substr, pos + 1);
+    return pos;
+  }
+
+  public String getAbstract() {
+    if (mdContent == null) {
+      return null;
+    }
+
+    int idx = ordinalIndexOf(mdContent, "###", 2);
+
+    if (idx == -1) {
+      return mdContent;
+    } else {
+      return mdContent.substring(0, idx);
+    }
+  }
 }

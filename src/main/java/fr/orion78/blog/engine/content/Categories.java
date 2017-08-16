@@ -55,7 +55,7 @@ public class Categories {
     } else {
       StringWriter w = new StringWriter();
       for (Article article : cat.getArticles()) {
-        content.getArticles().renderArticle(article, w);
+        content.getArticles().renderArticle(article, w, true);
       }
       mapping.put("content", w.toString());
     }

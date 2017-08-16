@@ -60,21 +60,24 @@ public class Articles {
   }
 
   private String renderArticle(@NotNull Article article) {
-    return renderArticle(article, new StringWriter()).toString();
+    return renderArticle(article, new StringWriter(), false).toString();
   }
 
-  Writer renderArticle(@NotNull Article article, @NotNull Writer w) {
+  @NotNull
+  Writer renderArticle(@NotNull Article article, @NotNull Writer w, boolean abstractContent) {
     Map<String, Object> mapping = new HashMap<>();
+    mapping.put("abstractContent", abstractContent);
     mapping.put("articleId", article.getId());
     mapping.put("articleImage", article.getArticleImage());
     mapping.put("articleTitle", article.getTitle());
-    mapping.put("articleContent", article.getMdContent());
+    mapping.put("articleContent", abstractContent ? article.getAbstract() : article.getMdContent());
     mapping.put("articleAuthor", article.getAuthor());
     mapping.put("articleDate", LocalDateTime.ofEpochSecond(article.getLastModification() / 1000, 0, ZoneOffset.UTC).format(formatter));
 
     // TODO
     mapping.put("i18n_writtenBy", "Ecrit par");
     mapping.put("i18n_lastModified", "Modifié le");
+    mapping.put("i18n_seeMore", "Lire la suite...");
 
 
     Template articleTemplate;
