@@ -14,6 +14,8 @@ public class Article {
   private String title;
   private String mdContent;
 
+  private transient long lastModification;
+
   public Article(long id,
                  @NotNull String author,
                  @NotNull String category,
@@ -74,5 +76,13 @@ public class Article {
 
   public void setMdContent(String mdContent) {
     this.mdContent = mdContent;
+  }
+
+  public long getLastModification() {
+    return lastModification;
+  }
+
+  public void setLastModification(long lastModification) {
+    this.lastModification = lastModification;
   }
 }

@@ -40,8 +40,7 @@ public class BlogMain {
       });
     });
 
-    Spark.after((request, response) ->
-        {
+    Spark.after((request, response) -> {
           // Only if accepting it
           if (request.headers("Accept-Encoding").contains("gzip")) {
             response.header("Content-Encoding", "gzip");

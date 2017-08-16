@@ -94,6 +94,7 @@ public class Content {
     try {
       InputStreamReader r = new InputStreamReader(new FileInputStream(article), StandardCharsets.UTF_8);
       Article art = gson.fromJson(r, Article.class);
+      art.setLastModification(article.lastModified());
       categories.getCategoryMap().get(art.getCategory()).addArticle(art);
       categories.getCategories().get(0).addArticle(art); // Add article to home too
       articles.put(art.getId(), art);

@@ -14,12 +14,16 @@ import spark.Spark;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Articles {
   private static final Logger LOG = LoggerFactory.getLogger(Articles.class);
+  private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY/MM/dd à HH:mm:ss");
 
   private volatile Map<Long, Article> articles = Collections.emptyMap();
 
@@ -55,16 +59,22 @@ public class Articles {
     return content.renderWebpage(mapping);
   }
 
-  private String renderArticle(@NotNull Article article){
+  private String renderArticle(@NotNull Article article) {
     return renderArticle(article, new StringWriter()).toString();
   }
 
-  Writer renderArticle(@NotNull Article article, @NotNull Writer w){
+  Writer renderArticle(@NotNull Article article, @NotNull Writer w) {
     Map<String, Object> mapping = new HashMap<>();
     mapping.put("articleId", article.getId());
     mapping.put("articleImage", article.getArticleImage());
     mapping.put("articleTitle", article.getTitle());
     mapping.put("articleContent", article.getMdContent());
+    mapping.put("articleAuthor", article.getAuthor());
+    mapping.put("articleDate", LocalDateTime.ofEpochSecond(article.getLastModification() / 1000, 0, ZoneOffset.UTC).format(formatter));
+
+    // TODO
+    mapping.put("i18n_writtenBy", "Ecrit par");
+    mapping.put("i18n_lastModified", "Modifié le");
 
 
     Template articleTemplate;

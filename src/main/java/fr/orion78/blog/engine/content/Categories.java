@@ -54,7 +54,7 @@ public class Categories {
       mapping.put("content", "This category " + category + " is empty !");
     } else {
       StringWriter w = new StringWriter();
-      for(Article article : cat.getArticles()){
+      for (Article article : cat.getArticles()) {
         content.getArticles().renderArticle(article, w);
       }
       mapping.put("content", w.toString());
