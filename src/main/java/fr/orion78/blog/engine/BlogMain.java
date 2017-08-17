@@ -1,6 +1,5 @@
 package fr.orion78.blog.engine;
 
-import fr.orion78.blog.engine.admin.Admin;
 import fr.orion78.blog.engine.content.Content;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -24,19 +23,23 @@ public class BlogMain {
     Spark.staticFiles.externalLocation(args[0] + "/static");
     Spark.staticFiles.expireTime(2); // TODO increase it when not in test
 
+    Spark.get("", content::mainContent);
     Spark.get("/", content::mainContent);
+
     Spark.get("/reload", content::reloadContent);
     Spark.get("/category/*", content::getCategory);
     Spark.get("/article/:article", content::getArticle);
 
     Spark.path("/admin", () -> {
-      Spark.get("/", Admin::connectMenu);
-      Spark.post("/connect", Admin::createSessionIfCorrect);
+      Spark.get("", content::adminConnectMenu);
+      Spark.get("/", content::adminConnectMenu);
+
+      Spark.post("/connect", content::adminCreateSessionIfCorrect);
 
       Spark.path("/articles", () -> {
-        Spark.before("/*", Admin::ensureSession);
-        Spark.get("/list", Admin::getArticleList);
-        Spark.get("/article/:article", Admin::getArticle);
+        Spark.before("/*", content::adminEnsureSession);
+        Spark.get("/list", content::adminGetArticleList);
+        Spark.get("/article/:article", content::adminEditArticle);
       });
     });
 

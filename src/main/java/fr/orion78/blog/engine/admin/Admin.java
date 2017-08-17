@@ -2,8 +2,10 @@ package fr.orion78.blog.engine.admin;
 
 import fr.orion78.blog.engine.Util;
 import fr.orion78.blog.engine.content.Content;
+import fr.orion78.blog.engine.content.article.Article;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -21,13 +23,13 @@ public class Admin {
   private static final Logger LOG = LoggerFactory.getLogger(Admin.class);
   private static final Integer MAX_ATTEMPTS = 5;
 
-  private static Map<String, String> credentials = new HashMap<>();
+  private Map<String, String> credentials;
 
-  static {
-    credentials.put("dsa", "root");
+  public Admin(Map<String, String> credentials) {
+    this.credentials = credentials;
   }
 
-  public static Object connectMenu(Request request, Response response) {
+  public Object connectMenu(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
     StringWriter writer = new StringWriter();
 
     Map<String, Object> mapping = new HashMap<>();
@@ -48,7 +50,7 @@ public class Admin {
     return writer.toString();
   }
 
-  public static Object createSessionIfCorrect(Request request, Response response) {
+  public Object createSessionIfCorrect(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
     Session session = request.session(true);
     session.maxInactiveInterval(600);
 
@@ -83,28 +85,39 @@ public class Admin {
     return null;
   }
 
-  public static void ensureSession(Request request, Response response) {
+  public void ensureSession(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
     Session session = request.session();
     if (session == null) {
-      response.redirect("/admin/");
+      response.redirect("/admin");
       return;
     }
 
     String login = session.attribute("login");
 
     if (login == null) {
-      response.redirect("/admin/");
+      response.redirect("/admin");
       return;
     }
 
-    LOG.info("Valid session for {}", login);
+    LOG.debug("Valid session for {}", login);
   }
 
-  public static Object getArticleList(Request request, Response response) {
-    return "article list";
+  public Object getArticleList(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
+    StringWriter w = new StringWriter();
+    content.getArticles().getArticles().entrySet().stream()
+        .sorted((a, b) -> Long.compare(b.getKey(), a.getKey()))
+        .forEachOrdered((e) -> {
+          Article art = e.getValue();
+          w.append("<a href=\"/admin/articles/article/")
+              .append(Long.toString(art.getId()))
+              .append("\">")
+              .append(art.getTitle())
+              .append("</a><br/>");
+        });
+    return w.toString();
   }
 
-  public static Object getArticle(Request request, Response response) {
-    return null;
+  public Object editArticle(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
+    return "lol";
   }
 }

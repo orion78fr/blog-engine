@@ -3,6 +3,7 @@ package fr.orion78.blog.engine.content;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fr.orion78.blog.engine.Util;
+import fr.orion78.blog.engine.admin.Admin;
 import fr.orion78.blog.engine.content.article.Article;
 import fr.orion78.blog.engine.content.category.Category;
 import freemarker.template.Configuration;
@@ -39,6 +40,7 @@ public class Content {
   private File staticFilesFolder;
   private Articles articles;
   private Categories categories;
+  private Admin admin;
   private String blogTitle;
   private String blogTitleImg;
   private String sidebarMd;
@@ -88,6 +90,10 @@ public class Content {
 
       this.articles = new Articles(articles);
     }
+
+    Map<String, String> credentials = new HashMap<>();
+    credentials.put("dsa", "root");
+    this.admin = new Admin(credentials);
   }
 
   private void loadArticle(@NotNull Map<Long, Article> articles, @NotNull File article) {
@@ -146,11 +152,31 @@ public class Content {
     return articles.getArticle(this, request, response);
   }
 
-  Articles getArticles() {
+  public Object adminConnectMenu(@NotNull Request request, @NotNull Response response) {
+    return admin.connectMenu(this, request, response);
+  }
+
+  public Object adminCreateSessionIfCorrect(@NotNull Request request, @NotNull Response response) {
+    return admin.createSessionIfCorrect(this, request, response);
+  }
+
+  public void adminEnsureSession(@NotNull Request request, @NotNull Response response) {
+    admin.ensureSession(this, request, response);
+  }
+
+  public Object adminGetArticleList(@NotNull Request request, @NotNull Response response) {
+    return admin.getArticleList(this, request, response);
+  }
+
+  public Object adminEditArticle(@NotNull Request request, @NotNull Response response) {
+    return admin.editArticle(this, request, response);
+  }
+
+  public Articles getArticles() {
     return articles;
   }
 
-  Categories getCategories() {
+  public Categories getCategories() {
     return categories;
   }
 

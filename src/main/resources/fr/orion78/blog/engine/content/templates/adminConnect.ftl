@@ -14,7 +14,7 @@
   <body>
     <div id="loginForm">
       <div class="tableDiv">
-        <form action="connect" method="post">
+        <form action="/admin/connect" method="post">
           <div id="loginDiv">
             <label for="formLogin">Login : </label> <input id="formLogin" name="login" type="text" formtarget="login"/>
           </div>
