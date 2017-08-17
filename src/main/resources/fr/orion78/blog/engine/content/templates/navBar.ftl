@@ -4,7 +4,7 @@
   <#else>
   <li>
   </#if>
-  <a href="/category/${cat.name}">
+  <a href="/category/${cat.fullPath}">
   ${cat.name}
   </a>
 
