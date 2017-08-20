@@ -6,7 +6,7 @@
 
   <groupId>fr.orion78.blog</groupId>
   <artifactId>engine</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
 
   <build>
     <plugins>
