@@ -1,5 +1,5 @@
 <#macro printCat cat>
-  <#if cat.name == catToHighlight>
+  <#if cat.fullPath == catToHighlight>
   <li class="active">
   <#else>
   <li>

@@ -15,6 +15,10 @@ import spark.Spark;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -73,7 +77,7 @@ public class Admin {
 
     session.attribute("attempts", attempts);
 
-    if (Objects.equals(credentials.get(login), password)) {
+    if (login != null && password != null && Objects.equals(credentials.get(login), password)) {
       LOG.info("Login successful");
       session.attribute("login", login);
       response.redirect("/admin/articles/list");
@@ -83,6 +87,17 @@ public class Admin {
     }
 
     return null;
+  }
+
+  private String passwdSha1(String passwd) throws NoSuchAlgorithmException {
+    MessageDigest md = MessageDigest.getInstance("SHA-1");
+    md.reset();
+    md.update(passwd.getBytes(StandardCharsets.UTF_8));
+    byte[] digest = md.digest();
+
+    try(Formatter f = new Formatter()){
+      return f.format("%02x", digest).toString();
+    }
   }
 
   public void ensureSession(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
@@ -118,6 +133,38 @@ public class Admin {
   }
 
   public Object editArticle(@NotNull Content content, @NotNull Request request, @NotNull Response response) {
-    return "lol";
+    String articleNum = request.params("article");
+    Long l;
+    try {
+      l = Long.parseLong(articleNum);
+    } catch (NumberFormatException e) {
+      throw Spark.halt(400, "Article is not a number");
+    }
+
+    Article article = content.getArticles().getArticles().get(l);
+
+    if (article == null) {
+      throw Spark.halt(404, "Article does not exist");
+    }
+
+    StringWriter writer = new StringWriter();
+
+    Map<String, Object> mapping = new HashMap<>();
+    mapping.put("articleMd", article.getMdContent());
+
+    Template mainContentTemplate;
+    try {
+      mainContentTemplate = Content.freeMarker.getTemplate("templates/editArticle.ftl");
+    } catch (IOException e) {
+      throw Spark.halt(404, "Template not found");
+    }
+
+    try {
+      mainContentTemplate.process(mapping, writer);
+    } catch (TemplateException | IOException e) {
+      throw Spark.halt(500, "Error in template processing : " + Util.exceptionToStringForWebpage(e));
+    }
+
+    return writer.toString();
   }
 }
