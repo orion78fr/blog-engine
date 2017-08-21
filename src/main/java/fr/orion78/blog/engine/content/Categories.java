@@ -77,4 +77,24 @@ public class Categories {
       fixFullPath(subCat, cat.getFullPath() + '/');
     }
   }
+
+  void addToCategoriesRecursively(@NotNull Article art) {
+    String category = art.getCategory();
+    String[] cats = category.split("/");
+
+    Category currentCat = categoryMap.get(cats[0]);
+    currentCat.addArticle(art);
+
+    for (int i = 1; i < cats.length; i++) {
+      String cat = cats[i];
+      currentCat = currentCat.findSubcat(cat);
+      if (currentCat == null) {
+        throw new RuntimeException("Subcategory " + category + " not found");
+      }
+      currentCat.addArticle(art);
+    }
+
+    // Add to home
+    categories.get(0).addArticle(art);
+  }
 }

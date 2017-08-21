@@ -56,4 +56,14 @@ public class Category {
     checkInit();
     return articles;
   }
+
+  @Nullable
+  public Category findSubcat(@NotNull String cat) {
+    for (Category subCategory : subCategories) {
+      if(subCategory.getName().equals(cat)){
+        return subCategory;
+      }
+    }
+    return null;
+  }
 }

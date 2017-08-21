@@ -101,8 +101,7 @@ public class Content {
       InputStreamReader r = new InputStreamReader(new FileInputStream(article), StandardCharsets.UTF_8);
       Article art = gson.fromJson(r, Article.class);
       art.setLastModification(article.lastModified());
-      categories.getCategoryMap().get(art.getCategory()).addArticle(art);
-      categories.getCategories().get(0).addArticle(art); // Add article to home too
+      categories.addToCategoriesRecursively(art);
       articles.put(art.getId(), art);
     } catch (FileNotFoundException e) {
       LOG.error("Articles file not found", e);
