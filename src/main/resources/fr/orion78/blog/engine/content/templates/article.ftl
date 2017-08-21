@@ -1,11 +1,13 @@
 <div class="articleContainer" id="article-${articleId}">
-  <img src="${articleImage}" alt="Article ${articleId} image"/>
+  <#list articleImages as artImg>
+    <img src="${artImg}" alt="Article ${articleId} image"/>
+  </#list>
   <h1>${articleTitle}</h1>
   <div class="articleSubtitle">${i18n_writtenBy} ${articleAuthor} - ${i18n_lastModified} ${articleDate}</div>
   <div class="articleMd">${articleContent}</div>
   <#if abstractContent>
     <a href="/article/${articleId}">${i18n_seeMore}</a>
-  <!--<script id="dsq-count-scr" src="//iletaittroisfois.disqus.com/count.js" async></script>-->
+    (<span class="disqus-comment-count" data-disqus-identifier="${articleId}">Chargement du nombre de commentaire...</span>)
   <#else>
     <div id="disqus_thread"></div>
     <script>

@@ -1,8 +1,11 @@
 package fr.orion78.blog.engine.content.article;
 
+import fr.orion78.blog.engine.Util;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class Article {
   private static final Logger LOG = LoggerFactory.getLogger(Article.class);
@@ -10,7 +13,7 @@ public class Article {
   private long id;
   private String author;
   private String category;
-  private String articleImage;
+  private List<String> articleImages;
   private String title;
   private String mdContent;
 
@@ -19,13 +22,13 @@ public class Article {
   public Article(long id,
                  @NotNull String author,
                  @NotNull String category,
-                 @NotNull String articleImage,
+                 @NotNull List<String> articleImages,
                  @NotNull String title,
                  @NotNull String mdContent) {
     this.id = id;
     this.author = author;
     this.category = category;
-    this.articleImage = articleImage;
+    this.articleImages = articleImages;
     this.title = title;
     this.mdContent = mdContent;
   }
@@ -54,12 +57,12 @@ public class Article {
     this.category = category;
   }
 
-  public String getArticleImage() {
-    return articleImage;
+  public List<String> getArticleImages() {
+    return articleImages;
   }
 
-  public void setArticleImage(String articleImage) {
-    this.articleImage = articleImage;
+  public void setArticleImages(List<String> articleImages) {
+    this.articleImages = articleImages;
   }
 
   public String getTitle() {
@@ -86,19 +89,12 @@ public class Article {
     this.lastModification = lastModification;
   }
 
-  private static int ordinalIndexOf(String str, String substr, int n) {
-    int pos = str.indexOf(substr);
-    while (--n > 0 && pos != -1)
-      pos = str.indexOf(substr, pos + 1);
-    return pos;
-  }
-
   public String getAbstract() {
     if (mdContent == null) {
       return null;
     }
 
-    int idx = ordinalIndexOf(mdContent, "###", 2);
+    int idx = Util.ordinalIndexOf(mdContent, "###", 2);
 
     if (idx == -1) {
       return mdContent;

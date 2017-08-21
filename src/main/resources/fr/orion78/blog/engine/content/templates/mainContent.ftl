@@ -47,5 +47,6 @@
         container.html(marked(container.html(), {sanitize: false}));
       })
     </script>
+    <script id="dsq-count-scr" src="//iletaittroisfois.disqus.com/count.js" async></script>
   </body>
 </html>

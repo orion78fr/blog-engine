@@ -68,7 +68,7 @@ public class Articles {
     Map<String, Object> mapping = new HashMap<>();
     mapping.put("abstractContent", abstractContent);
     mapping.put("articleId", article.getId());
-    mapping.put("articleImage", article.getArticleImage());
+    mapping.put("articleImages", article.getArticleImages());
     mapping.put("articleTitle", article.getTitle());
     mapping.put("articleContent", abstractContent ? article.getAbstract() : article.getMdContent());
     mapping.put("articleAuthor", article.getAuthor());
