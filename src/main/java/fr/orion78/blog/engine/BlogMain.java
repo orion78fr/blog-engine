@@ -45,7 +45,8 @@ public class BlogMain {
 
     Spark.after((request, response) -> {
           // Only if accepting it
-          if (request.headers("Accept-Encoding").contains("gzip")) {
+          String encoding = request.headers("Accept-Encoding");
+          if (encoding != null && encoding.contains("gzip")) {
             response.header("Content-Encoding", "gzip");
           }
         }
